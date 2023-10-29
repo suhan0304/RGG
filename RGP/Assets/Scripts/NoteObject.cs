@@ -31,6 +31,7 @@ public class NoteShort : NoteObject
         StartCoroutine(IEMove());
     }
 
+    // 노트 이동 함수
     public override IEnumerator IEMove()
     {
         while (true)
@@ -43,11 +44,13 @@ public class NoteShort : NoteObject
         }
     }
 
+    // 초기 위치 설정용 
     public override void SetPosition(Vector3[] pos)
     {
         transform.position = new Vector3(pos[0].x, pos[0].y, pos[0].z);
     }
 
+    // 위치 보정용 
     public override void Interpolate(float curruntTime, float interval, float judgeLineY)
     {
         transform.position = new Vector3(transform.position.x, (note.time - curruntTime) * interval + judgeLineY, transform.position.z);
@@ -74,6 +77,7 @@ public class NoteLong : NoteObject
         StartCoroutine(IEMove());
     }
 
+    // 노트 이동 함수
     public override IEnumerator IEMove()
     {
         while (true)
@@ -87,6 +91,7 @@ public class NoteLong : NoteObject
         }
     }
 
+    // 초기 위치 설정용 
     public override void SetPosition(Vector3[] pos)
     {
         transform.position = new Vector3(pos[0].x, pos[0].y, pos[0].z);
@@ -100,6 +105,7 @@ public class NoteLong : NoteObject
         lineRenderer.SetPosition(1, linePos);
     }
 
+    // 위치 보정용 
     public override void Interpolate(float curruntTime, float interval, float judgeLineY)
     {
         transform.position = new Vector3(head.transform.position.x, (note.time - curruntTime) * interval + judgeLineY, head.transform.position.z);
