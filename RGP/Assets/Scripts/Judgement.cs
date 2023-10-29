@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// 판정 종류
 public enum JudgeType
 {
     max100,
@@ -20,6 +21,7 @@ public enum JudgeType
 
 public class Judgement : MonoBehaviour
 {
+    // 판정 범위(ms) 설정
     readonly int max100 = 42;
     readonly int max90 = 60;
     readonly int max80 = 78;
@@ -33,6 +35,8 @@ public class Judgement : MonoBehaviour
     readonly int max1 = 400;
     readonly int maxbreak = 600;
 
+
+    // 노트 시간 정보를 담을 큐 및 큐들을 담을 리스트 
     List<Queue<Note>> notes = new List<Queue<Note>>();
     Queue<Note> note1 = new Queue<Note>();
     Queue<Note> note2 = new Queue<Note>();
@@ -85,12 +89,14 @@ public class Judgement : MonoBehaviour
             return;
 
         Note note = notes[line].Peek();
+        // judgeTime = 노래 진행 시간 - 노트 판정 시간 : 해당 값을 이용해 판정
         int judgeTime = curruntTime - note.time + judgeTimeFromUserSetting;
         JudgeType note_Judgement = JudgeType.max1;
 
-        if (judgeTime < maxbreak && judgeTime > -maxbreak)
+
+        if (judgeTime < maxbreak && judgeTime > -maxbreak)  // judgeTime이 maxBreak 범위 안에 들어오면 -> 판정 시작
         {
-            if (judgeTime < max1 && judgeTime > -max1)
+            if (judgeTime < max1 && judgeTime > -max1)      // max1 범위 안에 break가 아니라 점수로 인정 : combo, effect 동작 실행
             {
                 if (judgeTime <= max100 && judgeTime >= -max100)
                 {
@@ -150,24 +156,24 @@ public class Judgement : MonoBehaviour
                 Score.Instance.data.combo++;
 
             }
-            else
+            else // break 범위 안에는 들어옴, max1 범위 안에 못들어옴 => break 판정 (miss)
             {
                 Score.Instance.data.fastMiss++;
                 note_Judgement = JudgeType.maxbreak;
-                Score.Instance.data.combo = 0;
+                Score.Instance.data.combo = 0;      //break시 콤보 초기화
             }
-            Score.Instance.data.judge = note_Judgement;
-            Score.Instance.SetScore();
+            Score.Instance.data.judge = note_Judgement; // Score에 판정 결과를 넘김
+            Score.Instance.SetScore();                  // Score의 SetScore를 진행
 
-
+            // Combo Animation 실행
             EffectManager.Instance.coolbomb_Animation(line, (int)note_Judgement);
-
-            if (note.type == (int)NoteType.Short)
+            
+            if (note.type == (int)NoteType.Short)       //Short 노트 : 바로 Release를 진행 
             {
                 Note ReleaseNote = notes[line].Dequeue();
                 NoteGenerator.Instance.judgedNoteRelease(ReleaseNote.line - 1);
             }
-            else if (note.type == (int)NoteType.Long)
+            else if (note.type == (int)NoteType.Long)   // Long 노트 : 꾹 누르고 있어야 하므로 CheckLongNote 동작
             {
                 longNoteCheck[line] = 1;
             }
@@ -176,15 +182,15 @@ public class Judgement : MonoBehaviour
 
     public void CheckLongNote(int line)
     {
+        // 노트가 없거나 Long 노트가 아니면 종료
         if (notes[line].Count <= 0)
             return;
-
         Note note = notes[line].Peek();
         if (note.type != (int)NoteType.Long)
             return;
 
         JudgeType note_Judgement = JudgeType.max1;
-        int judgeTime = curruntTime - note.tail + judgeTimeFromUserSetting;
+        int judgeTime = curruntTime - note.tail + judgeTimeFromUserSetting; // 현재 시간 - 꼬리 시간 ( + 조정 값 )
         if (judgeTime < max1 && judgeTime > -max1)
         {
             if (judgeTime <= max100 && judgeTime >= -max100)
@@ -261,6 +267,7 @@ public class Judgement : MonoBehaviour
         }
     }
 
+    // 노트가 판정 기준의 범위 밖으로 나가버리면 -> 노트 판정 실패 = break (노트가 아래로 그냥 진행될 경우)
     IEnumerator IECheckMiss()
     {
         while (true)
@@ -271,19 +278,23 @@ public class Judgement : MonoBehaviour
             {
                 if (notes[i].Count <= 0)
                     break;
+
                 Note note = notes[i].Peek();
                 int judgeTime = note.time - curruntTime + judgeTimeFromUserSetting;
 
                 if (note.type == (int)NoteType.Long)
                 {
-                    if (longNoteCheck[note.line - 1] == 0) // Head가 판정처리가 안된 경우
+                    if (longNoteCheck[note.line - 1] == 0)  // Head가 판정처리가 안된 경우
                     {
+                        // 노트가 -maxbreak 범위 밖으로 벗어남 = break 판정 진행
                         if (judgeTime < -maxbreak)
                         {
                             Score.Instance.data.maxbreak++;
                             Score.Instance.data.judge = JudgeType.maxbreak;
                             Score.Instance.data.combo = 0;
                             Score.Instance.SetScore();
+
+                            // break로 판정 후 큐에서 해당 노트 정보 Dequeue 후 release 진행
                             Note ReleaseNote = notes[i].Dequeue();
                             NoteGenerator.Instance.judgedNoteRelease(ReleaseNote.line-1);
                         }
@@ -291,12 +302,15 @@ public class Judgement : MonoBehaviour
                 }
                 else
                 {
+                    // 노트가 -maxbreak 범위 밖으로 벗어남 = break 판정 진행
                     if (judgeTime < -maxbreak)
                     {
                         Score.Instance.data.maxbreak++;
                         Score.Instance.data.judge = JudgeType.maxbreak;
                         Score.Instance.data.combo = 0;
                         Score.Instance.SetScore();
+
+                        // break로 판정 후 큐에서 해당 노트 정보 Dequeue 후 release 진행
                         Note ReleaseNote = notes[i].Dequeue();
                         NoteGenerator.Instance.judgedNoteRelease(ReleaseNote.line-1);
                     }
