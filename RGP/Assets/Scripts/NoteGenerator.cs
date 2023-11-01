@@ -72,11 +72,7 @@ public class NoteGenerator : MonoBehaviour
     {
         GameObject note = new GameObject("NoteLong");
         note.transform.SetParent(parent.transform, false);
-
-        GameObject line = Instantiate(LinePrefab);
-        line.name = "line";
-        line.transform.SetParent(note.transform, false);
-
+        
         GameObject head = Instantiate(notePrefab);
         head.name = "head";
         head.transform.SetParent(note.transform, false);
@@ -84,7 +80,10 @@ public class NoteGenerator : MonoBehaviour
         GameObject tail = Instantiate(notePrefab);
         tail.name = "tail";
         tail.transform.SetParent(note.transform, false);
-        
+
+        GameObject line = Instantiate(LinePrefab);
+        line.name = "line";
+        line.transform.SetParent(note.transform, false);
 
         note.AddComponent<NoteLong>();
         return note.GetComponent<NoteLong>();
@@ -130,6 +129,12 @@ public class NoteGenerator : MonoBehaviour
         notes_queues.Add(notes_queue2);
         notes_queues.Add(notes_queue3);
         notes_queues.Add(notes_queue4);
+    }
+
+    //판정이 완료된 노트는 바로 Object Pool에 Release를 진행
+    public void FallNoteDequeue(int line)
+    {
+        NoteObject note = notes_queues[line].Dequeue();
     }
 
     //판정이 완료된 노트는 바로 Object Pool에 Release를 진행

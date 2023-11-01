@@ -65,9 +65,9 @@ public class NoteLong : NoteObject
 
     void Awake()
     {
-        line = transform.GetChild(0).gameObject;
-        head = transform.GetChild(1).gameObject;
-        tail = transform.GetChild(2).gameObject;
+        head = transform.GetChild(0).gameObject;
+        tail = transform.GetChild(1).gameObject;
+        line = transform.GetChild(2).gameObject;
     }
 
     public override void Move()
@@ -96,7 +96,11 @@ public class NoteLong : NoteObject
 
         head.transform.position = new Vector3(pos[0].x, pos[0].y, pos[0].z);
         tail.transform.position = new Vector3(pos[1].x, pos[1].y, pos[1].z);
-        line.transform.position = new Vector3(pos[0].x, (pos[0].y+pos[1].y)/2, pos[0].z);
+
+        RectTransform rectTransform = line.GetComponent<RectTransform>();
+        rectTransform.sizeDelta = new Vector2(120, pos[1].y - pos[0].y);
+
+        line.transform.position = new Vector3(pos[0].x, (pos[0].y + pos[1].y) / 2, pos[0].z);
 
     }
 
