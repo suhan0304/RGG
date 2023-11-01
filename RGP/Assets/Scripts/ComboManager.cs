@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class ComboManager : MonoBehaviour
 {
+    //콤보 시스템을 이 부분으로 옮길 예정
+
     // Start is called before the first frame update
     void Start()
     {
