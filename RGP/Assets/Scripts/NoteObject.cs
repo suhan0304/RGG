@@ -59,17 +59,15 @@ public class NoteShort : NoteObject
 
 public class NoteLong : NoteObject
 {
-    LineRenderer lineRenderer;
     public GameObject head;
     public GameObject tail;
-    GameObject line;
+    public GameObject line;
 
     void Awake()
     {
         head = transform.GetChild(0).gameObject;
         tail = transform.GetChild(1).gameObject;
         line = transform.GetChild(2).gameObject;
-        lineRenderer = line.GetComponent<LineRenderer>();
     }
 
     public override void Move()
@@ -95,14 +93,15 @@ public class NoteLong : NoteObject
     public override void SetPosition(Vector3[] pos)
     {
         transform.position = new Vector3(pos[0].x, pos[0].y, pos[0].z);
+
         head.transform.position = new Vector3(pos[0].x, pos[0].y, pos[0].z);
         tail.transform.position = new Vector3(pos[1].x, pos[1].y, pos[1].z);
-        line.transform.position = head.transform.position;
 
-        Vector3 linePos = tail.transform.position - head.transform.position;
-        linePos.x = 0f;
-        linePos.z = 0f;
-        lineRenderer.SetPosition(1, linePos);
+        RectTransform rectTransform = line.GetComponent<RectTransform>();
+        rectTransform.sizeDelta = new Vector2(120, pos[1].y - pos[0].y);
+
+        line.transform.position = new Vector3(pos[0].x, (pos[0].y + pos[1].y) / 2, pos[0].z);
+
     }
 
     // 위치 보정용 
@@ -111,11 +110,8 @@ public class NoteLong : NoteObject
         transform.position = new Vector3(head.transform.position.x, (note.time - curruntTime) * interval + judgeLineY, head.transform.position.z);
         head.transform.position = new Vector3(head.transform.position.x, (note.time - curruntTime) * interval + judgeLineY, head.transform.position.z);
         tail.transform.position = new Vector3(tail.transform.position.x, (note.tail - curruntTime) * interval + judgeLineY, tail.transform.position.z);
-        line.transform.position = head.transform.position;
 
-        Vector3 linePos = tail.transform.position - head.transform.position;
-        linePos.x = 0f;
-        linePos.z = 0f;
-        lineRenderer.SetPosition(1, linePos);
+        line.transform.position = new Vector3(head.transform.position.x, ((note.time + note.tail)/2 - curruntTime) * interval + judgeLineY, head.transform.position.z);
+
     }
 }
