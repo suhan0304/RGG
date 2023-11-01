@@ -7,4 +7,3 @@
 ## 작업 후 pull_request 
 - 팀원 전원 확인 후 merge confirm 할 예정
 - 코멘트 작성 및 변경 사항 확인 가능
-- 관리자가 merge 후 develop_branch는 삭제할 예정
