@@ -25,7 +25,7 @@ public class NoteGenerator : MonoBehaviour
 
     public GameObject parent;
     public GameObject notePrefab;
-    public Material lineRendererMaterial;
+    public GameObject LinePrefab;
 
     //기본 interval, interval 단위로 노트를 생성
     readonly float defaultInterval = 0.5f; // 1배속 기준점 (1마디 전체가 화면에 그려지는 정도를 정의)
@@ -73,25 +73,18 @@ public class NoteGenerator : MonoBehaviour
         GameObject note = new GameObject("NoteLong");
         note.transform.SetParent(parent.transform, false);
 
+        GameObject line = Instantiate(LinePrefab);
+        line.name = "line";
+        line.transform.SetParent(note.transform, false);
 
         GameObject head = Instantiate(notePrefab);
         head.name = "head";
         head.transform.SetParent(note.transform, false);
 
         GameObject tail = Instantiate(notePrefab);
+        tail.name = "tail";
         tail.transform.SetParent(note.transform, false);
         
-
-        GameObject line = new GameObject("line");
-        line.transform.SetParent(note.transform, false);
-
-        line.AddComponent<LineRenderer>();
-        LineRenderer lineRenderer = line.GetComponent<LineRenderer>();
-        lineRenderer.material = lineRendererMaterial;
-        lineRenderer.sortingOrder = 3;
-        lineRenderer.widthMultiplier = 0.8f;
-        lineRenderer.positionCount = 2;
-        lineRenderer.useWorldSpace = false;
 
         note.AddComponent<NoteLong>();
         return note.GetComponent<NoteLong>();
