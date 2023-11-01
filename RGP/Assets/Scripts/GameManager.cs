@@ -76,6 +76,8 @@ public class GameManager : MonoBehaviour
         UIController.Instance.Init();
         Score.Instance.Init();
 
+        BattleManager.Instance.Init();
+
         yield return new WaitUntil(() => SheetLoader.Instance.bLoadFinish == true);
         
 
