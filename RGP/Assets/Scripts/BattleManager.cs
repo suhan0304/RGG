@@ -68,25 +68,26 @@ public class BattleManager : MonoBehaviour
         return amount;
     }
 
+    // 플레이어 또는 몬스터의 공격 함수
     public void Attack(JudgeType judge)
     {
-        damage = Calculate(judge);
-        if (judge == JudgeType.maxbreak || judge == JudgeType.max10)
+        damage = Calculate(judge);  // 데미지 계산
+        if (judge == JudgeType.maxbreak || judge == JudgeType.max10)    // 몬스터가 공격할 경우
         {
             currentPlayerHealth -= damage;
-            playerHealth.value = currentPlayerHealth;
+            playerHealth.value = currentPlayerHealth;   // 플레이어 HP 슬라이더 업데이트
             
-            if (playerHealth.value <= 0)
+            if (playerHealth.value <= 0)    // 플레이어의 체력이 0이 되었을 경우
             {
                 Debug.Log("Player is defeated!");
             }
         }
-        else
+        else    // 플레이어가 공격할 경우
         {
             currentMonsterHealth -= damage;
-            monsterHealth.value = currentMonsterHealth;
+            monsterHealth.value = currentMonsterHealth; // 몬스터 HP 슬라이더 업데이트
 
-            if (monsterHealth.value <= 0)
+            if (monsterHealth.value <= 0)   // 몬스터의 체력이 0이 되었을 경우
             {
                 Debug.Log("Monster is defeated");
             }
