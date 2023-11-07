@@ -165,7 +165,7 @@ public class Judgement : MonoBehaviour
             Score.Instance.data.judge = note_Judgement; // Score에 판정 결과를 넘김
             Score.Instance.SetScore();                  // Score의 SetScore를 진행
 
-            BattleManager.Instance.Attack(note_Judgement);  // BattleManager에서 판정에 맞는 공격 결과 넘김
+            Damage.Instance.Attack(note_Judgement);  // BattleManager에서 판정에 맞는 공격 결과 넘김
 
             // Combo Animation 실행
             EffectManager.Instance.coolbomb_Animation(line, (int)note_Judgement);
@@ -219,7 +219,7 @@ public class Judgement : MonoBehaviour
                             Score.Instance.data.combo = 0;
                             Score.Instance.SetScore();
 
-                            BattleManager.Instance.Attack(JudgeType.maxbreak);  // BattleManager에서 플레이어가 공격 받도록 함
+                            Damage.Instance.Attack(JudgeType.maxbreak);  // BattleManager에서 플레이어가 공격 받도록 함
 
                             // break로 판정 후 큐에서 해당 노트 정보 Dequeue 후 release 진행
                             Note ReleaseNote = notes[i].Dequeue();
@@ -238,7 +238,7 @@ public class Judgement : MonoBehaviour
                         Score.Instance.data.combo = 0;
                         Score.Instance.SetScore();
 
-                        BattleManager.Instance.Attack(JudgeType.maxbreak);  // BattleManager에서 플레이어가 공격 받도록 함
+                        Damage.Instance.Attack(JudgeType.maxbreak);  // BattleManager에서 플레이어가 공격 받도록 함
 
                         // break로 판정 후 큐에서 해당 노트 정보 Dequeue 후 release 진행
                         Note ReleaseNote = notes[i].Dequeue();

@@ -39,6 +39,12 @@ public class EffectManager : MonoBehaviour
     public GameObject comboImage_object;
     public GameObject comboText_object;
 
+    public Animator player = new Animator();
+    public Animator monster = new Animator();
+
+    public Animator[] playerDamaged = new Animator[5];
+    public Animator[] monsterDamaged = new Animator[5];
+
     public void activate_lineEffect(int line)
     {
         hitEffectAnimator[line].SetTrigger("on_btnHitEffect");
@@ -83,4 +89,47 @@ public class EffectManager : MonoBehaviour
     {
         comboImage.SetTrigger("offcombo");
     }
+
+    // 플레이어 공격 모션
+    public void playerAttackEffect()
+    {
+        // 플레이어가 공격 중이 아닐 때
+        if (player.GetBool("attack") == false)
+        {
+            player.SetBool("damaged", false);
+            monster.SetBool("attack", false);
+
+            player.SetBool("attack", true);
+            monster.SetBool("damaged", true);
+        }
+    }
+        
+    // 몬스터 공격 모션
+    public void monsterAttackEffect()
+    {
+        // 몬스터가 공격 중이 아닐 떄
+        if (monster.GetBool("attack") == false)
+        {
+            monster.SetBool("damaged", false);
+            player.SetBool("attack", false);
+
+            monster.SetBool("attack", true);
+            player.SetBool("damaged", true);
+        }
+        
+    }
+
+    // 플레이어가 데미지 받는 텍스트 띄우기
+    public void playerDamagedEffect(int i)
+    {
+        playerDamaged[i].SetTrigger("damaged");        
+    }
+
+    // 몬스터가 데미지 받는 텍스트 띄우기
+    public void monsterDamagedEffect(int i)
+    {
+        monsterDamaged[i].SetTrigger("damaged");
+    }
+
+
 }
