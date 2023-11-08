@@ -177,18 +177,96 @@ public class Judgement : MonoBehaviour
             }
             else if (note.type == (int)NoteType.Long)   // Long 노트 : 꾹 누르고 있어야 하므로 CheckLongNote 동작
             {
-                Note ReleaseNote = notes[line].Dequeue();
-                NoteGenerator.Instance.FallNoteDequeue(ReleaseNote.line - 1);
-                longNoteCheck[line] = 1;
+                if(note_Judgement != JudgeType.maxbreak)
+                {
+                    longNoteCheck[line] = 1;
+                }
             }
         }
     }
 
     public void CheckLongNote(int line)
     {
-        if(longNoteCheck[line] == 1)
+        if (notes[line].Count <= 0)
+            return;
+
+        Note note = notes[line].Peek();
+        if (note.type != (int)NoteType.Long)
+            return;
+
+        if (longNoteCheck[line] == 1)
         {
+            JudgeType note_Judgement = JudgeType.max1;
+            int judgeTime = curruntTime - note.tail + judgeTimeFromUserSetting;
+            if (judgeTime < max1 && judgeTime > -max1)      // max1 범위 안에 break가 아니라 점수로 인정 : combo, effect 동작 실행
+            {
+                if (judgeTime <= max100 && judgeTime >= -max100)
+                {
+                    Score.Instance.data.max100++;
+                    note_Judgement = JudgeType.max100;
+                }
+                else if (judgeTime <= max90 && judgeTime >= -max90)
+                {
+                    Score.Instance.data.max90++;
+                    note_Judgement = JudgeType.max90;
+                }
+                else if (judgeTime <= max80 && judgeTime >= -max80)
+                {
+                    Score.Instance.data.max80++;
+                    note_Judgement = JudgeType.max80;
+                }
+                else if (judgeTime <= max70 && judgeTime >= -max70)
+                {
+                    Score.Instance.data.max70++;
+                    note_Judgement = JudgeType.max70;
+                }
+                else if (judgeTime <= max60 && judgeTime >= -max60)
+                {
+                    Score.Instance.data.max60++;
+                    note_Judgement = JudgeType.max60;
+                }
+                else if (judgeTime <= max50 && judgeTime >= -max50)
+                {
+                    Score.Instance.data.max50++;
+                    note_Judgement = JudgeType.max50;
+                }
+                else if (judgeTime <= max40 && judgeTime >= -max40)
+                {
+                    Score.Instance.data.max40++;
+                    note_Judgement = JudgeType.max40;
+                }
+                else if (judgeTime <= max30 && judgeTime >= -max30)
+                {
+                    Score.Instance.data.max30++;
+                    note_Judgement = JudgeType.max30;
+                }
+                else if (judgeTime <= max20 && judgeTime >= -max20)
+                {
+                    Score.Instance.data.max20++;
+                    note_Judgement = JudgeType.max20;
+                }
+                else if (judgeTime <= max10 && judgeTime >= -max10)
+                {
+                    Score.Instance.data.max10++;
+                    note_Judgement = JudgeType.max10;
+                }
+                else if (judgeTime <= max1 && judgeTime >= -max1)
+                {
+                    Score.Instance.data.max1++;
+                    note_Judgement = JudgeType.max1;
+                }
+            }
+            else
+            {
+                Score.Instance.data.longMiss++;
+            }
+            Score.Instance.data.judge = note_Judgement;
+            Score.Instance.SetScore();
+
             longNoteCheck[line] = 0;
+
+            Note ReleaseNote = notes[line].Dequeue();
+            NoteGenerator.Instance.FallNoteDequeue(ReleaseNote.line - 1);
         }
     }
 
@@ -223,8 +301,7 @@ public class Judgement : MonoBehaviour
 
                             // break로 판정 후 큐에서 해당 노트 정보 Dequeue 후 release 진행
                             Note ReleaseNote = notes[i].Dequeue();
-                            NoteGenerator.Instance.FallNoteDequeue(ReleaseNote.line-1);
-                            //NoteGenerator.Instance.judgedNoteRelease(ReleaseNote.line-1);
+                            NoteGenerator.Instance.FallNoteDequeue(ReleaseNote.line - 1);
                         }
                     }
                 }
@@ -242,7 +319,7 @@ public class Judgement : MonoBehaviour
 
                         // break로 판정 후 큐에서 해당 노트 정보 Dequeue 후 release 진행
                         Note ReleaseNote = notes[i].Dequeue();
-                        NoteGenerator.Instance.judgedNoteRelease(ReleaseNote.line-1);
+                        NoteGenerator.Instance.judgedNoteRelease(ReleaseNote.line - 1);
                     }
                 }
             }
