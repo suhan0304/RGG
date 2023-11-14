@@ -39,6 +39,12 @@ public class EffectManager : MonoBehaviour
     public GameObject comboImage_object;
     public GameObject comboText_object;
 
+    public Animator player = new Animator();
+    public Animator monster = new Animator();
+
+    public Animator[] playerDamaged = new Animator[5];
+    public Animator[] monsterDamaged = new Animator[5];
+
     public void activate_lineEffect(int line)
     {
         hitEffectAnimator[line].SetTrigger("on_btnHitEffect");
@@ -52,18 +58,38 @@ public class EffectManager : MonoBehaviour
     }
 
 
-    public void coolbomb_Animation(int line, int max_index)
+    public void coolbomb_Animation(int line, int max_index, int notetype_long)  //애니메이션 실행 라인:int line  노트타입(롱노트, 숏노트): int notetype_long
     {
         if(max_index != 11) // 11 == maxbreak이므로 coolbomb 이펙트 없음
         {
-            if (max_index == 0)
+            if (notetype_long == 0) //숏노트인 경우 , 롱노트가 아닌 경우
             {
-                coolBomb[line].SetTrigger("coolbomb_max");
+                coolBomb[line].SetBool("coolbomb_max_loop", false);     //숏노트이므로 루프파라미터 해제
+                coolBomb[line].SetBool("coolbomb_loop", false);
+
+                if (max_index == 0)
+                {
+                    coolBomb[line].SetTrigger("coolbomb_max");
+                }
+                else
+                {
+                    coolBomb[line].SetTrigger("coolbomb");
+                }
             }
-            else
+            else  //롱노트인 경우
             {
-                coolBomb[line].SetTrigger("coolbomb");
+                if (max_index == 0)
+                {
+                    coolBomb[line].SetTrigger("coolbomb_max");
+                    coolBomb[line].SetBool("coolbomb_max_loop", true);
+                }
+                else
+                {
+                    coolBomb[line].SetTrigger("coolbomb");
+                    coolBomb[line].SetBool("coolbomb_loop", true);
+                }
             }
+            
         }
     }
 
@@ -83,4 +109,47 @@ public class EffectManager : MonoBehaviour
     {
         comboImage.SetTrigger("offcombo");
     }
+
+    // 플레이어 공격 모션
+    public void playerAttackEffect()
+    {
+        // 플레이어가 공격 중이 아닐 때
+        if (player.GetBool("attack") == false)
+        {
+            player.SetBool("damaged", false);
+            monster.SetBool("attack", false);
+
+            player.SetBool("attack", true);
+            monster.SetBool("damaged", true);
+        }
+    }
+        
+    // 몬스터 공격 모션
+    public void monsterAttackEffect()
+    {
+        // 몬스터가 공격 중이 아닐 떄
+        if (monster.GetBool("attack") == false)
+        {
+            monster.SetBool("damaged", false);
+            player.SetBool("attack", false);
+
+            monster.SetBool("attack", true);
+            player.SetBool("damaged", true);
+        }
+        
+    }
+
+    // 플레이어가 데미지 받는 텍스트 띄우기
+    public void playerDamagedEffect(int i)
+    {
+        playerDamaged[i].SetTrigger("damaged");        
+    }
+
+    // 몬스터가 데미지 받는 텍스트 띄우기
+    public void monsterDamagedEffect(int i)
+    {
+        monsterDamaged[i].SetTrigger("damaged");
+    }
+
+
 }
