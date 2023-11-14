@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// 판정 종류
+// � 醫瑜
 public enum JudgeType
 {
     max100,
@@ -21,7 +21,7 @@ public enum JudgeType
 
 public class Judgement : MonoBehaviour
 {
-    // 판정 범위(ms) 설정
+    // � 踰(ms) ㅼ
     readonly int max100 = 42;
     readonly int max90 = 60;
     readonly int max80 = 78;
@@ -36,7 +36,7 @@ public class Judgement : MonoBehaviour
     readonly int maxbreak = 600;
 
 
-    // 노트 시간 정보를 담을 큐 및 큐들을 담을 리스트 
+    // 명 媛 �蹂대� 댁  諛 ㅼ 댁 由ъㅽ 
     List<Queue<Note>> notes = new List<Queue<Note>>();
     Queue<Note> note1 = new Queue<Note>();
     Queue<Note> note2 = new Queue<Note>();
@@ -47,7 +47,7 @@ public class Judgement : MonoBehaviour
     int[] longNoteCheck = new int[4] { 0, 0, 0, 0 };
 
     int curruntTime = 0;
-    /// User에 의해 조정된 판정 타이밍
+    /// User  議곗 � 대
     public int judgeTimeFromUserSetting = 0;
 
     Coroutine coCheckMiss;
@@ -89,14 +89,14 @@ public class Judgement : MonoBehaviour
             return;
 
         Note note = notes[line].Peek();
-        // judgeTime = 노래 진행 시간 - 노트 판정 시간 : 해당 값을 이용해 판정
+        // judgeTime = 몃 吏 媛 - 명 � 媛 : 대 媛 댁⑺ �
         int judgeTime = curruntTime - note.time + judgeTimeFromUserSetting;
         JudgeType note_Judgement = JudgeType.max1;
 
 
-        if (judgeTime < maxbreak && judgeTime > -maxbreak)  // judgeTime이 maxBreak 범위 안에 들어오면 -> 판정 시작
+        if (judgeTime < maxbreak && judgeTime > -maxbreak)  // judgeTime maxBreak 踰  ㅼ댁ㅻ㈃ -> � 
         {
-            if (judgeTime < max1 && judgeTime > -max1)      // max1 범위 안에 break가 아니라 점수로 인정 : combo, effect 동작 실행
+            if (judgeTime < max1 && judgeTime > -max1)      // max1 踰  break媛  �濡 몄 : combo, effect  ㅽ
             {
                 if (judgeTime <= max100 && judgeTime >= -max100)
                 {
@@ -156,36 +156,31 @@ public class Judgement : MonoBehaviour
                 Score.Instance.data.combo++;
 
             }
-            else // break 범위 안에는 들어옴, max1 범위 안에 못들어옴 => break 판정 (miss)
+            else // break 踰  ㅼ댁, max1 踰  紐삳ㅼ댁 => break � (miss)
             {
                 Score.Instance.data.fastMiss++;
                 note_Judgement = JudgeType.maxbreak;
-                Score.Instance.data.combo = 0;      //break시 콤보 초기화
+                Score.Instance.data.combo = 0;      //break 肄ㅻ낫 珥湲고
             }
             Score.Instance.data.judge = note_Judgement; // Score에 판정 결과를 넘김
-
-
-            // Combo Animation 실행
-            EffectManager.Instance.coolbomb_Animation(line, (int)note_Judgement);
-
-            //게임이 플레잉 상태일때만 SetScore와 공격 진행
-            //노트의 release도 이제 더 이상 관여하지 않음 -> GameManager에서 자체적으로 모든 노트를 Release할 예정
+            
+            //寃 � 쇰留 SetScore 怨듦꺽 吏
+            //명몄 release 댁  댁 愿ы吏  -> GameManager 泥댁쇰 紐⑤ 명몃� Release �
             if (GameManager.Instance.state != GameManager.GameState.GamePlaying) 
             {
-                Score.Instance.SetScore();                  // Score의 SetScore를 진행
+                Score.Instance.SetScore();                  // Score SetScore瑜 吏
 
-                Damage.Instance.Attack(note_Judgement);  // BattleManager에서 판정에 맞는 공격 결과 넘김
+                Damage.Instance.Attack(note_Judgement);  // BattleManager � 留 怨듦꺽 寃곌낵 源
 
-                if (note.type == (int)NoteType.Short)       //Short 노트 : 바로 Release를 진행
+                if (note.type == (int)NoteType.Short)       //Short 명 : 諛濡 Release瑜 吏
                 {
-
                     EffectManager.Instance.coolbomb_Animation(line, (int)note_Judgement, (int)NoteType.Short); // Combo Animation 실행
                     Note ReleaseNote = notes[line].Dequeue();
                     NoteGenerator.Instance.judgedNoteRelease(ReleaseNote.line - 1);
                 }
-                else if (note.type == (int)NoteType.Long)   // Long 노트 : 꾹 누르고 있어야 하므로 CheckLongNote 동작
+                else if (note.type == (int)NoteType.Long)   // Long 명 : 袁 瑜닿� 댁 誘濡 CheckLongNote 
                 {
-                    EffectManager.Instance.coolbomb_Animation(line, (int)note_Judgement, (int)NoteType.Long); // Combo Animation 실행
+                    EffectManager.Instance.coolbomb_Animation(line, (int)note_Judgement, (int)NoteType.Long); // Combo Animation ㅽ
                     if (note_Judgement != JudgeType.maxbreak)
                     {
                         longNoteCheck[line] = 1;
@@ -208,7 +203,7 @@ public class Judgement : MonoBehaviour
         {
             JudgeType note_Judgement = JudgeType.max1;
             int judgeTime = curruntTime - note.tail + judgeTimeFromUserSetting;
-            if (judgeTime < max1 && judgeTime > -max1)      // max1 범위 안에 break가 아니라 점수로 인정 : combo, effect 동작 실행
+            if (judgeTime < max1 && judgeTime > -max1)      // max1 踰  break媛  �濡 몄 : combo, effect  ㅽ
             {
                 if (judgeTime <= max100 && judgeTime >= -max100)
                 {
@@ -275,16 +270,16 @@ public class Judgement : MonoBehaviour
 
             longNoteCheck[line] = 0;
 
-            // Combo Animation 실행
+            // Combo Animation ㅽ
             EffectManager.Instance.coolbomb_Animation(line, (int)note_Judgement,0);
 
-            //Long 노트 : Release를 진행
+            //Long 명 : Release瑜 吏
             Note ReleaseNote = notes[line].Dequeue();
             NoteGenerator.Instance.FallNoteDequeue(ReleaseNote.line - 1);
         }
     }
 
-    // 노트가 판정 기준의 범위 밖으로 나가버리면 -> 노트 판정 실패 = break (노트가 아래로 그냥 진행될 경우)
+    // 명멸 � 湲곗 踰 諛쇰 媛踰由щ㈃ -> 명 � ㅽ = break (명멸 濡 洹몃 吏 寃쎌)
     IEnumerator IECheckMiss()
     {
         while (true)
@@ -301,9 +296,9 @@ public class Judgement : MonoBehaviour
 
                 if (note.type == (int)NoteType.Long)
                 {
-                    if (longNoteCheck[note.line - 1] == 0)  // Head가 판정처리가 안된 경우
+                    if (longNoteCheck[note.line - 1] == 0)  // Head媛 �泥由ш  寃쎌
                     {
-                        // 노트가 -maxbreak 범위 밖으로 벗어남 = break 판정 진행
+                        // 명멸 -maxbreak 踰 諛쇰 踰대 = break � 吏
                         if (judgeTime < -maxbreak)
                         {
                             Score.Instance.data.maxbreak++;
@@ -311,9 +306,9 @@ public class Judgement : MonoBehaviour
                             Score.Instance.data.combo = 0;
                             Score.Instance.SetScore();
 
-                            Damage.Instance.Attack(JudgeType.maxbreak);  // BattleManager에서 플레이어가 공격 받도록 함
+                            Damage.Instance.Attack(JudgeType.maxbreak);  // BattleManager �댁닿 怨듦꺽 諛濡 
 
-                            // break로 판정 후 큐에서 해당 노트 정보 Dequeue 후 release 진행
+                            // break濡 �   대 명 �蹂 Dequeue  release 吏
                             Note ReleaseNote = notes[i].Dequeue();
                             NoteGenerator.Instance.FallNoteDequeue(ReleaseNote.line - 1);
                         }
@@ -321,7 +316,7 @@ public class Judgement : MonoBehaviour
                 }
                 else
                 {
-                    // 노트가 -maxbreak 범위 밖으로 벗어남 = break 판정 진행
+                    // 명멸 -maxbreak 踰 諛쇰 踰대 = break � 吏
                     if (judgeTime < -maxbreak)
                     {
                         Score.Instance.data.maxbreak++;
@@ -329,9 +324,9 @@ public class Judgement : MonoBehaviour
                         Score.Instance.data.combo = 0;
                         Score.Instance.SetScore();
 
-                        Damage.Instance.Attack(JudgeType.maxbreak);  // BattleManager에서 플레이어가 공격 받도록 함
+                        Damage.Instance.Attack(JudgeType.maxbreak);  // BattleManager �댁닿 怨듦꺽 諛濡 
 
-                        // break로 판정 후 큐에서 해당 노트 정보 Dequeue 후 release 진행
+                        // break濡 �   대 명 �蹂 Dequeue  release 吏
                         Note ReleaseNote = notes[i].Dequeue();
                         if(GameManager.Instance.state == GameManager.GameState.GamePlaying) 
                             NoteGenerator.Instance.judgedNoteRelease(ReleaseNote.line - 1);

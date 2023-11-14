@@ -252,6 +252,20 @@ public class NoteGenerator : MonoBehaviour
     }
     */
 
+    //Release 리스트에 있는 모든 노트들을 Release 및 비활성화
+    public void ReleaseCompleted()
+    {
+        foreach (NoteObject note in toReleaseList)
+        {
+            note.gameObject.SetActive(false);
+
+            if (note is NoteShort)
+                PoolShort.Release(note as NoteShort);
+            else
+                PoolLong.Release(note as NoteLong);
+        }
+    }
+
     //life가 false인 Note들만 Release
     void Release()
     {
