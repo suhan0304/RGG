@@ -17,6 +17,8 @@ public class GameManager : MonoBehaviour
             return instance;
         }
     }
+
+
     void Awake()
     {
         if (instance == null)
@@ -83,6 +85,7 @@ public class GameManager : MonoBehaviour
 
     IEnumerator IEInit()
     {
+        uiGameOver.SetActive(false);
         SheetLoader.Instance.Init();
 
         UIController.Instance.Init();
