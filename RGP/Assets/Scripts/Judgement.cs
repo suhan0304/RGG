@@ -163,10 +163,8 @@ public class Judgement : MonoBehaviour
                 Score.Instance.data.combo = 0;      //break시 콤보 초기화
             }
             Score.Instance.data.judge = note_Judgement; // Score에 판정 결과를 넘김
-            Score.Instance.SetScore();                  // Score의 SetScore를 진행
 
-            Damage.Instance.Attack(note_Judgement);  // BattleManager에서 판정에 맞는 공격 결과 넘김
-
+<<<<<<< Updated upstream
             // Combo Animation 실행
             EffectManager.Instance.coolbomb_Animation(line, (int)note_Judgement);
             
@@ -180,7 +178,34 @@ public class Judgement : MonoBehaviour
                 Note ReleaseNote = notes[line].Dequeue();
                 NoteGenerator.Instance.FallNoteDequeue(ReleaseNote.line - 1);
                 longNoteCheck[line] = 1;
+=======
+
+            //게임이 플레잉 상태일때만 SetScore와 공격 진행
+            //노트의 release도 이제 더 이상 관여하지 않음 -> GameManager에서 자체적으로 모든 노트를 Release할 예정
+            if (GameManager.Instance.state != GameManager.GameState.GamePlaying) 
+            {
+                Score.Instance.SetScore();                  // Score의 SetScore를 진행
+
+                Damage.Instance.Attack(note_Judgement);  // BattleManager에서 판정에 맞는 공격 결과 넘김
+
+                if (note.type == (int)NoteType.Short)       //Short 노트 : 바로 Release를 진행
+                {
+
+                    EffectManager.Instance.coolbomb_Animation(line, (int)note_Judgement, (int)NoteType.Short); // Combo Animation 실행
+                    Note ReleaseNote = notes[line].Dequeue();
+                    NoteGenerator.Instance.judgedNoteRelease(ReleaseNote.line - 1);
+                }
+                else if (note.type == (int)NoteType.Long)   // Long 노트 : 꾹 누르고 있어야 하므로 CheckLongNote 동작
+                {
+                    EffectManager.Instance.coolbomb_Animation(line, (int)note_Judgement, (int)NoteType.Long); // Combo Animation 실행
+                    if (note_Judgement != JudgeType.maxbreak)
+                    {
+                        longNoteCheck[line] = 1;
+                    }
+                }
+>>>>>>> Stashed changes
             }
+
         }
     }
 
@@ -242,7 +267,12 @@ public class Judgement : MonoBehaviour
 
                         // break로 판정 후 큐에서 해당 노트 정보 Dequeue 후 release 진행
                         Note ReleaseNote = notes[i].Dequeue();
+<<<<<<< Updated upstream
                         NoteGenerator.Instance.judgedNoteRelease(ReleaseNote.line-1);
+=======
+                        if(GameManager.Instance.state == GameManager.GameState.GamePlaying) 
+                            NoteGenerator.Instance.judgedNoteRelease(ReleaseNote.line - 1);
+>>>>>>> Stashed changes
                     }
                 }
             }
