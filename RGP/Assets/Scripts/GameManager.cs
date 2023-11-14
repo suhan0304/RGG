@@ -23,9 +23,10 @@ public class GameManager : MonoBehaviour
 
     public enum GameState
     {
-        Game
+        GamePlaying,
+        NoneGamePlaying
     }
-    public GameState state = GameState.Game;
+    public GameState state = GameState.GamePlaying;
 
     /// 게임 진행 상태. InputManager.OnEnter() 참고
     public bool isPlaying = true;
@@ -67,7 +68,13 @@ public class GameManager : MonoBehaviour
         StartCoroutine(IEInitPlay());
     }
 
+    public void GameOver()
+    {
+        //플레이어 체력이 0이 되서 게임 오버
+        state = GameState.NoneGamePlaying; //게임 상태를 NonePlaying으로 변경
+        AudioManager.Instance.Stop(); //노래 중지
 
+    }
 
     IEnumerator IEInit()
     {
@@ -88,31 +95,22 @@ public class GameManager : MonoBehaviour
     {
         // 새 게임을 시작할 수 없게 해줌
         isPlaying = true;
-
         // Sheet 초기화
         title = "Consolation";
-
         sheets[title].Init();
         Debug.Log("sheet 초기화 완료");
-
         // Audio 삽입
         AudioManager.Instance.Insert(sheets[title].clip);
         Debug.Log("Audio 삽입 완료");
-
-        
         // 판정 초기화
         FindObjectOfType<Judgement>().Init();
-
         // 점수 초기화
         Score.Instance.Clear();
-
         // Note 생성
         NoteGenerator.Instance.StartGen();
         Debug.Log("노트 생성 완료");
-
         // 3초 대기
         yield return new WaitForSeconds(3f);
-
         // Audio 재생
         AudioManager.Instance.progressTime = 0f;
         AudioManager.Instance.Play();

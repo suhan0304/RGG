@@ -5,7 +5,6 @@ using UnityEngine.InputSystem;
 
 public class InputManager : MonoBehaviour
 {
-
     Judgement judgement = null;
     Sync sync = null;
 
@@ -88,7 +87,7 @@ public class InputManager : MonoBehaviour
     {
         if (context.started)
         {
-            if (GameManager.Instance.state == GameManager.GameState.Game)
+            if (GameManager.Instance.state == GameManager.GameState.GamePlaying)
             {
                 if (!GameManager.Instance.isPlaying)
                     GameManager.Instance.Play();

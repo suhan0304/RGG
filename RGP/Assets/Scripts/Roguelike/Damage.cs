@@ -74,6 +74,11 @@ public class Damage : MonoBehaviour
         {
             damage = Damage.Instance.CalculateDamage(judge, monsterPower);   // 몬스터가 입힐 데미지
             BattleManager.Instance.currentPlayerHealth -= damage;   // 현재 플레이어 HP 감소
+
+            if (BattleManager.Instance.currentPlayerHealth <= 0) {
+                GameManager.Instance.GameOver();
+            }
+
             BattleManager.Instance.playerHealth.value = BattleManager.Instance.currentPlayerHealth;   // 플레이어 HP 슬라이더 업데이트
 
             textPlayerList[p_i].SetText(damage.ToString());     // 데미지 텍스트에 값 업데이트

@@ -252,20 +252,6 @@ public class NoteGenerator : MonoBehaviour
     }
     */
 
-    //Release 리스트에 있는 모든 노트들을 Release 및 비활성화
-    void ReleaseCompleted()
-    {
-        foreach (NoteObject note in toReleaseList)
-        {
-            note.gameObject.SetActive(false);
-
-            if (note is NoteShort)
-                PoolShort.Release(note as NoteShort);
-            else
-                PoolLong.Release(note as NoteLong);
-        }
-    }
-
     //life가 false인 Note들만 Release
     void Release()
     {
@@ -309,6 +295,11 @@ public class NoteGenerator : MonoBehaviour
     {
         while (true)
         {
+            //게임 state가 NonePlaying으로 변하면 노트생성 중지
+            if (GameManager.Instance.state == GameManager.GameState.NoneGamePlaying)
+            {
+                break;
+            }
             Gen();
             yield return new WaitForSeconds(interval);
             currentBar++;
@@ -320,6 +311,11 @@ public class NoteGenerator : MonoBehaviour
     {
         while (true)
         {
+            //게임 state가 NonePlaying으로 변하면 노트 Release 중지
+            if (GameManager.Instance.state == GameManager.GameState.NoneGamePlaying)
+            {
+                break;
+            }
             yield return new WaitForSeconds(interval);
             Release();
         }
@@ -332,8 +328,13 @@ public class NoteGenerator : MonoBehaviour
         Interval = defaultInterval * GameManager.Instance.Speed;
         float noteSpeed = Interval * 1000;
         // time이 duration을 넘어갈 동안만 지속 
-        while (time < duration) 
+        while (time < duration)
         {
+            //게임 state가 NonePlaying으로 변하면 노트 위치 보간 중지
+            if (GameManager.Instance.state == GameManager.GameState.NoneGamePlaying)
+            {
+                break;
+            }
             float milli = AudioManager.Instance.GetMilliSec();
 
             //생성된 노트들을 대상으로 진행
