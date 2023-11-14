@@ -6,6 +6,7 @@ public class GameManager : MonoBehaviour
 {
     public int resolution_X = 1920;
     public int resolution_Y = 1080;
+    public GameObject uiGameOver;
 
     static GameManager instance;
     public static GameManager Instance
@@ -60,9 +61,6 @@ public class GameManager : MonoBehaviour
 
     }
 
-
-
-
     public void Play()
     {
         StartCoroutine(IEInitPlay());
@@ -73,7 +71,8 @@ public class GameManager : MonoBehaviour
         //플레이어 체력이 0이 되서 게임 오버
         state = GameState.NoneGamePlaying; //게임 상태를 NonePlaying으로 변경
         AudioManager.Instance.Stop(); //노래 중지
-
+        //NoteGenerator.Instance.DisabledNote(); //노트들 숨기기
+        uiGameOver.SetActive(true);
     }
 
     IEnumerator IEInit()

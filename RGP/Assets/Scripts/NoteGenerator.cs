@@ -32,7 +32,7 @@ public class NoteGenerator : MonoBehaviour
     public float Interval { get; private set; }
 
     //Object Pool - Short Note용 생성
-    IObjectPool<NoteShort> poolShort;
+    public IObjectPool<NoteShort> poolShort;
     public IObjectPool<NoteShort> PoolShort
     {
     get
@@ -45,7 +45,7 @@ public class NoteGenerator : MonoBehaviour
         }
     }
     //Object Pool (short) : Short Note 생성
-    NoteShort CreatePooledShort()
+    public NoteShort CreatePooledShort()
     {
         GameObject note = Instantiate(notePrefab);          //Short Note - Instantiate를 이용해 notePrefab을 복사해서 생성
         note.transform.SetParent(parent.transform, false);  //생성한 노트 Parent 설정 : Parent 객체는 Notes(Empty Object)로 설정되어 있음
@@ -55,7 +55,7 @@ public class NoteGenerator : MonoBehaviour
     }
 
     //Object Pool - Long Note용 생성
-    IObjectPool<NoteLong> poolLong;
+    public IObjectPool<NoteLong> poolLong;
     public IObjectPool<NoteLong> PoolLong
     {
         get
@@ -251,7 +251,14 @@ public class NoteGenerator : MonoBehaviour
         }
     }
     */
-
+    public void DisabledNote()
+    {
+        foreach (NoteObject note in toReleaseList)
+        {
+            note.gameObject.SetActive(false);
+        }
+    }
+    
     //life가 false인 Note들만 Release
     void Release()
     {
@@ -272,7 +279,7 @@ public class NoteGenerator : MonoBehaviour
             else
             {
                 //life가 False가 아닌 Note의 경우 Release를 추후에 해줘야 하므로 reconNotes에 추가
-                reconNotes.Add(note); 
+                reconNotes.Add(note);
             }
         }
         //Release 노트를 비운 후 아직 Release가 안 된 노트들을 다시 Release 리스트에 추가 
@@ -298,6 +305,7 @@ public class NoteGenerator : MonoBehaviour
             //게임 state가 NonePlaying으로 변하면 노트생성 중지
             if (GameManager.Instance.state == GameManager.GameState.NoneGamePlaying)
             {
+                Debug.Log("노트 생성 정지");
                 break;
             }
             Gen();
@@ -314,6 +322,10 @@ public class NoteGenerator : MonoBehaviour
             //게임 state가 NonePlaying으로 변하면 노트 Release 중지
             if (GameManager.Instance.state == GameManager.GameState.NoneGamePlaying)
             {
+                Debug.Log("남는 노트 삭제");
+                yield return new WaitForSeconds(interval * 10);
+                Release();
+                Debug.Log("노트 삭제 정지");
                 break;
             }
             yield return new WaitForSeconds(interval);
@@ -333,6 +345,7 @@ public class NoteGenerator : MonoBehaviour
             //게임 state가 NonePlaying으로 변하면 노트 위치 보간 중지
             if (GameManager.Instance.state == GameManager.GameState.NoneGamePlaying)
             {
+                Debug.Log("노트 위치 보간 종료");
                 break;
             }
             float milli = AudioManager.Instance.GetMilliSec();
