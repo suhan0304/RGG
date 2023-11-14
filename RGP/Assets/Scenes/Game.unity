@@ -2094,10 +2094,6 @@ MonoBehaviour:
   - {fileID: 806366607}
   - {fileID: 1629357516}
   - {fileID: 339293156}
-  damagedPrefab: {fileID: 3661138691633603153, guid: d119fa4814f971b4b87d1cd79f2f5a29, type: 3}
-  playerDamagedPosition: {fileID: 823313268}
-  monsterDamagedPosition: {fileID: 857142683}
-  temp: {fileID: 0}
 --- !u!1 &542958440
 GameObject:
   m_ObjectHideFlags: 0

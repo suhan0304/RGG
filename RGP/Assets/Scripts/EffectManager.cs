@@ -58,18 +58,38 @@ public class EffectManager : MonoBehaviour
     }
 
 
-    public void coolbomb_Animation(int line, int max_index)
+    public void coolbomb_Animation(int line, int max_index, int notetype_long)  //애니메이션 실행 라인:int line  노트타입(롱노트, 숏노트): int notetype_long
     {
         if(max_index != 11) // 11 == maxbreak이므로 coolbomb 이펙트 없음
         {
-            if (max_index == 0)
+            if (notetype_long == 0) //숏노트인 경우 , 롱노트가 아닌 경우
             {
-                coolBomb[line].SetTrigger("coolbomb_max");
+                coolBomb[line].SetBool("coolbomb_max_loop", false);     //숏노트이므로 루프파라미터 해제
+                coolBomb[line].SetBool("coolbomb_loop", false);
+
+                if (max_index == 0)
+                {
+                    coolBomb[line].SetTrigger("coolbomb_max");
+                }
+                else
+                {
+                    coolBomb[line].SetTrigger("coolbomb");
+                }
             }
-            else
+            else  //롱노트인 경우
             {
-                coolBomb[line].SetTrigger("coolbomb");
+                if (max_index == 0)
+                {
+                    coolBomb[line].SetTrigger("coolbomb_max");
+                    coolBomb[line].SetBool("coolbomb_max_loop", true);
+                }
+                else
+                {
+                    coolBomb[line].SetTrigger("coolbomb");
+                    coolBomb[line].SetBool("coolbomb_loop", true);
+                }
             }
+            
         }
     }
 
