@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    public ItemSelection itemSelectionScript; // ItemSelection ìŠ¤í¬ë¦½íŠ¸ì— ëŒ€í•œ ì°¸ì¡°
+
     public int resolution_X = 1920;
     public int resolution_Y = 1080;
 
@@ -19,6 +21,7 @@ public class GameManager : MonoBehaviour
     {
         if (instance == null)
             instance = this;
+        itemSelectionScript = FindObjectOfType<ItemSelection>();
     }
 
     public enum GameState
@@ -27,7 +30,6 @@ public class GameManager : MonoBehaviour
     }
     public GameState state = GameState.Game;
 
-    /// °ÔÀÓ ÁøÇà »óÅÂ. InputManager.OnEnter() Âü°í
     public bool isPlaying = true;
     public string title;
     Coroutine coPlaying;
@@ -47,27 +49,20 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         StartCoroutine(IEInit());
     }
 
-    // Update is called once per frame
     void Update()
     {
 
     }
 
-
-
-
     public void Play()
     {
         StartCoroutine(IEInitPlay());
     }
-
-
 
     IEnumerator IEInit()
     {
@@ -79,42 +74,41 @@ public class GameManager : MonoBehaviour
         BattleManager.Instance.Init();
 
         yield return new WaitUntil(() => SheetLoader.Instance.bLoadFinish == true);
-        
 
         Play();
     }
 
     IEnumerator IEInitPlay()
     {
-        // »õ °ÔÀÓÀ» ½ÃÀÛÇÒ ¼ö ¾ø°Ô ÇØÁÜ
         isPlaying = true;
-
-        // Sheet ÃÊ±âÈ­
         title = "Consolation";
 
         sheets[title].Init();
-        Debug.Log("sheet ÃÊ±âÈ­ ¿Ï·á");
+        Debug.Log("Sheet ì´ˆê¸°í™” ì™„ë£Œ");
 
-        // Audio »ğÀÔ
         AudioManager.Instance.Insert(sheets[title].clip);
-        Debug.Log("Audio »ğÀÔ ¿Ï·á");
+        Debug.Log("Audio ì´ˆê¸°í™” ì™„ë£Œ");
 
-        
-        // ÆÇÁ¤ ÃÊ±âÈ­
         FindObjectOfType<Judgement>().Init();
 
-        // Á¡¼ö ÃÊ±âÈ­
         Score.Instance.Clear();
 
-        // Note »ı¼º
         NoteGenerator.Instance.StartGen();
-        Debug.Log("³ëÆ® »ı¼º ¿Ï·á");
+        Debug.Log("Note ìƒì„± ì‹œì‘");
 
-        // 3ÃÊ ´ë±â
         yield return new WaitForSeconds(3f);
-
-        // Audio Àç»ı
         AudioManager.Instance.progressTime = 0f;
         AudioManager.Instance.Play();
+
+        while (AudioManager.Instance.IsPlaying())
+        {
+            yield return null;
+        }
+
+        Debug.Log("ë…¸ë˜ê°€ ëë‚¬ìŠµë‹ˆë‹¤.");
+
+        // ë…¸ë˜ê°€ ëë‚˜ë©´ UI íŒ¨ë„ì„ í™œì„±í™”
+        itemSelectionScript.ShowItemSelectionPanel();
+
     }
 }
