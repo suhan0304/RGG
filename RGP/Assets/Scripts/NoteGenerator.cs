@@ -319,15 +319,6 @@ public class NoteGenerator : MonoBehaviour
     {
         while (true)
         {
-            //게임 state가 NonePlaying으로 변하면 노트 Release 중지
-            if (GameManager.Instance.state == GameManager.GameState.NoneGamePlaying)
-            {
-                Debug.Log("남는 노트 삭제");
-                yield return new WaitForSeconds(interval * 10);
-                Release();
-                Debug.Log("노트 삭제 정지");
-                break;
-            }
             yield return new WaitForSeconds(interval);
             Release();
         }
