@@ -36,7 +36,7 @@ public class BattleManager : MonoBehaviour
     public void Init()
     {
         // 임시 초기화
-        playerHealthAmount = 5000;
+        playerHealthAmount = 1000;  //임시로 1000으로 설정
         currentPlayerHealth = playerHealthAmount;
         playerHealth.maxValue = playerHealthAmount; // 플레이어 슬라이더 설정
         playerHealth.value = playerHealthAmount;

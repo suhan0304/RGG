@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// ÆÇÁ¤ Á¾·ù
+// íŒì • ì¢…ë¥˜
 public enum JudgeType
 {
     max100,
@@ -21,7 +21,7 @@ public enum JudgeType
 
 public class Judgement : MonoBehaviour
 {
-    // ÆÇÁ¤ ¹üÀ§(ms) ¼³Á¤
+    // íŒì • ë²”ìœ„(ms) ì„¤ì •
     readonly int max100 = 42;
     readonly int max90 = 60;
     readonly int max80 = 78;
@@ -36,7 +36,7 @@ public class Judgement : MonoBehaviour
     readonly int maxbreak = 600;
 
 
-    // ³ëÆ® ½Ã°£ Á¤º¸¸¦ ´ãÀ» Å¥ ¹× Å¥µéÀ» ´ãÀ» ¸®½ºÆ® 
+    // ë…¸íŠ¸ ì‹œê°„ ì •ë³´ë¥¼ ë‹´ì„ í ë° íë“¤ì„ ë‹´ì„ ë¦¬ìŠ¤íŠ¸ 
     List<Queue<Note>> notes = new List<Queue<Note>>();
     Queue<Note> note1 = new Queue<Note>();
     Queue<Note> note2 = new Queue<Note>();
@@ -47,7 +47,7 @@ public class Judgement : MonoBehaviour
     int[] longNoteCheck = new int[4] { 0, 0, 0, 0 };
 
     int curruntTime = 0;
-    /// User¿¡ ÀÇÇØ Á¶Á¤µÈ ÆÇÁ¤ Å¸ÀÌ¹Ö
+    /// Userì— ì˜í•´ ì¡°ì •ëœ íŒì • íƒ€ì´ë°
     public int judgeTimeFromUserSetting = 0;
 
     Coroutine coCheckMiss;
@@ -89,14 +89,14 @@ public class Judgement : MonoBehaviour
             return;
 
         Note note = notes[line].Peek();
-        // judgeTime = ³ë·¡ ÁøÇà ½Ã°£ - ³ëÆ® ÆÇÁ¤ ½Ã°£ : ÇØ´ç °ªÀ» ÀÌ¿ëÇØ ÆÇÁ¤
+        // judgeTime = ë…¸ë˜ ì§„í–‰ ì‹œê°„ - ë…¸íŠ¸ íŒì • ì‹œê°„ : í•´ë‹¹ ê°’ì„ ì´ìš©í•´ íŒì •
         int judgeTime = curruntTime - note.time + judgeTimeFromUserSetting;
         JudgeType note_Judgement = JudgeType.max1;
 
 
-        if (judgeTime < maxbreak && judgeTime > -maxbreak)  // judgeTimeÀÌ maxBreak ¹üÀ§ ¾È¿¡ µé¾î¿À¸é -> ÆÇÁ¤ ½ÃÀÛ
+        if (judgeTime < maxbreak && judgeTime > -maxbreak)  // judgeTimeì´ maxBreak ë²”ìœ„ ì•ˆì— ë“¤ì–´ì˜¤ë©´ -> íŒì • ì‹œì‘
         {
-            if (judgeTime < max1 && judgeTime > -max1)      // max1 ¹üÀ§ ¾È¿¡ break°¡ ¾Æ´Ï¶ó Á¡¼ö·Î ÀÎÁ¤ : combo, effect µ¿ÀÛ ½ÇÇà
+            if (judgeTime < max1 && judgeTime > -max1)      // max1 ë²”ìœ„ ì•ˆì— breakê°€ ì•„ë‹ˆë¼ ì ìˆ˜ë¡œ ì¸ì • : combo, effect ë™ì‘ ì‹¤í–‰
             {
                 if (judgeTime <= max100 && judgeTime >= -max100)
                 {
@@ -156,33 +156,40 @@ public class Judgement : MonoBehaviour
                 Score.Instance.data.combo++;
 
             }
-            else // break ¹üÀ§ ¾È¿¡´Â µé¾î¿È, max1 ¹üÀ§ ¾È¿¡ ¸øµé¾î¿È => break ÆÇÁ¤ (miss)
+            else // break ë²”ìœ„ ì•ˆì—ëŠ” ë“¤ì–´ì˜´, max1 ë²”ìœ„ ì•ˆì— ëª»ë“¤ì–´ì˜´ => break íŒì • (miss)
             {
                 Score.Instance.data.fastMiss++;
                 note_Judgement = JudgeType.maxbreak;
-                Score.Instance.data.combo = 0;      //break½Ã ÄŞº¸ ÃÊ±âÈ­
+                Score.Instance.data.combo = 0;      //breakì‹œ ì½¤ë³´ ì´ˆê¸°í™”
             }
-            Score.Instance.data.judge = note_Judgement; // Score¿¡ ÆÇÁ¤ °á°ú¸¦ ³Ñ±è
-            Score.Instance.SetScore();                  // ScoreÀÇ SetScore¸¦ ÁøÇà
-
-            Damage.Instance.Attack(note_Judgement);  // BattleManager¿¡¼­ ÆÇÁ¤¿¡ ¸Â´Â °ø°İ °á°ú ³Ñ±è
+            Score.Instance.data.judge = note_Judgement; // Scoreì— íŒì • ê²°ê³¼ë¥¼ ë„˜ê¹€
 
 
-            
+            // Combo Animation ì‹¤í–‰
+            EffectManager.Instance.coolbomb_Animation(line, (int)note_Judgement);
 
-            if (note.type == (int)NoteType.Short)       //Short ³ëÆ® : ¹Ù·Î Release¸¦ ÁøÇà
+            //ê²Œì„ì´ í”Œë ˆì‰ ìƒíƒœì¼ë•Œë§Œ SetScoreì™€ ê³µê²© ì§„í–‰
+            //ë…¸íŠ¸ì˜ releaseë„ ì´ì œ ë” ì´ìƒ ê´€ì—¬í•˜ì§€ ì•ŠìŒ -> GameManagerì—ì„œ ìì²´ì ìœ¼ë¡œ ëª¨ë“  ë…¸íŠ¸ë¥¼ Releaseí•  ì˜ˆì •
+            if (GameManager.Instance.state != GameManager.GameState.GamePlaying) 
             {
-                
-                EffectManager.Instance.coolbomb_Animation(line, (int)note_Judgement, (int)NoteType.Short); // Combo Animation ½ÇÇà
-                Note ReleaseNote = notes[line].Dequeue();
-                NoteGenerator.Instance.judgedNoteRelease(ReleaseNote.line - 1);
-            }
-            else if (note.type == (int)NoteType.Long)   // Long ³ëÆ® : ²Ú ´©¸£°í ÀÖ¾î¾ß ÇÏ¹Ç·Î CheckLongNote µ¿ÀÛ
-            {
-                EffectManager.Instance.coolbomb_Animation(line, (int)note_Judgement, (int)NoteType.Long); // Combo Animation ½ÇÇà
-                if (note_Judgement != JudgeType.maxbreak)
+                Score.Instance.SetScore();                  // Scoreì˜ SetScoreë¥¼ ì§„í–‰
+
+                Damage.Instance.Attack(note_Judgement);  // BattleManagerì—ì„œ íŒì •ì— ë§ëŠ” ê³µê²© ê²°ê³¼ ë„˜ê¹€
+
+                if (note.type == (int)NoteType.Short)       //Short ë…¸íŠ¸ : ë°”ë¡œ Releaseë¥¼ ì§„í–‰
                 {
-                    longNoteCheck[line] = 1;
+
+                    EffectManager.Instance.coolbomb_Animation(line, (int)note_Judgement, (int)NoteType.Short); // Combo Animation ì‹¤í–‰
+                    Note ReleaseNote = notes[line].Dequeue();
+                    NoteGenerator.Instance.judgedNoteRelease(ReleaseNote.line - 1);
+                }
+                else if (note.type == (int)NoteType.Long)   // Long ë…¸íŠ¸ : ê¾¹ ëˆ„ë¥´ê³  ìˆì–´ì•¼ í•˜ë¯€ë¡œ CheckLongNote ë™ì‘
+                {
+                    EffectManager.Instance.coolbomb_Animation(line, (int)note_Judgement, (int)NoteType.Long); // Combo Animation ì‹¤í–‰
+                    if (note_Judgement != JudgeType.maxbreak)
+                    {
+                        longNoteCheck[line] = 1;
+                    }
                 }
             }
         }
@@ -201,7 +208,7 @@ public class Judgement : MonoBehaviour
         {
             JudgeType note_Judgement = JudgeType.max1;
             int judgeTime = curruntTime - note.tail + judgeTimeFromUserSetting;
-            if (judgeTime < max1 && judgeTime > -max1)      // max1 ¹üÀ§ ¾È¿¡ break°¡ ¾Æ´Ï¶ó Á¡¼ö·Î ÀÎÁ¤ : combo, effect µ¿ÀÛ ½ÇÇà
+            if (judgeTime < max1 && judgeTime > -max1)      // max1 ë²”ìœ„ ì•ˆì— breakê°€ ì•„ë‹ˆë¼ ì ìˆ˜ë¡œ ì¸ì • : combo, effect ë™ì‘ ì‹¤í–‰
             {
                 if (judgeTime <= max100 && judgeTime >= -max100)
                 {
@@ -268,16 +275,16 @@ public class Judgement : MonoBehaviour
 
             longNoteCheck[line] = 0;
 
-            // Combo Animation ½ÇÇà
+            // Combo Animation ì‹¤í–‰
             EffectManager.Instance.coolbomb_Animation(line, (int)note_Judgement,0);
 
-            //Long ³ëÆ® : Release¸¦ ÁøÇà
+            //Long ë…¸íŠ¸ : Releaseë¥¼ ì§„í–‰
             Note ReleaseNote = notes[line].Dequeue();
             NoteGenerator.Instance.FallNoteDequeue(ReleaseNote.line - 1);
         }
     }
 
-    // ³ëÆ®°¡ ÆÇÁ¤ ±âÁØÀÇ ¹üÀ§ ¹ÛÀ¸·Î ³ª°¡¹ö¸®¸é -> ³ëÆ® ÆÇÁ¤ ½ÇÆĞ = break (³ëÆ®°¡ ¾Æ·¡·Î ±×³É ÁøÇàµÉ °æ¿ì)
+    // ë…¸íŠ¸ê°€ íŒì • ê¸°ì¤€ì˜ ë²”ìœ„ ë°–ìœ¼ë¡œ ë‚˜ê°€ë²„ë¦¬ë©´ -> ë…¸íŠ¸ íŒì • ì‹¤íŒ¨ = break (ë…¸íŠ¸ê°€ ì•„ë˜ë¡œ ê·¸ëƒ¥ ì§„í–‰ë  ê²½ìš°)
     IEnumerator IECheckMiss()
     {
         while (true)
@@ -294,9 +301,9 @@ public class Judgement : MonoBehaviour
 
                 if (note.type == (int)NoteType.Long)
                 {
-                    if (longNoteCheck[note.line - 1] == 0)  // Head°¡ ÆÇÁ¤Ã³¸®°¡ ¾ÈµÈ °æ¿ì
+                    if (longNoteCheck[note.line - 1] == 0)  // Headê°€ íŒì •ì²˜ë¦¬ê°€ ì•ˆëœ ê²½ìš°
                     {
-                        // ³ëÆ®°¡ -maxbreak ¹üÀ§ ¹ÛÀ¸·Î ¹ş¾î³² = break ÆÇÁ¤ ÁøÇà
+                        // ë…¸íŠ¸ê°€ -maxbreak ë²”ìœ„ ë°–ìœ¼ë¡œ ë²—ì–´ë‚¨ = break íŒì • ì§„í–‰
                         if (judgeTime < -maxbreak)
                         {
                             Score.Instance.data.maxbreak++;
@@ -304,9 +311,9 @@ public class Judgement : MonoBehaviour
                             Score.Instance.data.combo = 0;
                             Score.Instance.SetScore();
 
-                            Damage.Instance.Attack(JudgeType.maxbreak);  // BattleManager¿¡¼­ ÇÃ·¹ÀÌ¾î°¡ °ø°İ ¹Şµµ·Ï ÇÔ
+                            Damage.Instance.Attack(JudgeType.maxbreak);  // BattleManagerì—ì„œ í”Œë ˆì´ì–´ê°€ ê³µê²© ë°›ë„ë¡ í•¨
 
-                            // break·Î ÆÇÁ¤ ÈÄ Å¥¿¡¼­ ÇØ´ç ³ëÆ® Á¤º¸ Dequeue ÈÄ release ÁøÇà
+                            // breakë¡œ íŒì • í›„ íì—ì„œ í•´ë‹¹ ë…¸íŠ¸ ì •ë³´ Dequeue í›„ release ì§„í–‰
                             Note ReleaseNote = notes[i].Dequeue();
                             NoteGenerator.Instance.FallNoteDequeue(ReleaseNote.line - 1);
                         }
@@ -314,7 +321,7 @@ public class Judgement : MonoBehaviour
                 }
                 else
                 {
-                    // ³ëÆ®°¡ -maxbreak ¹üÀ§ ¹ÛÀ¸·Î ¹ş¾î³² = break ÆÇÁ¤ ÁøÇà
+                    // ë…¸íŠ¸ê°€ -maxbreak ë²”ìœ„ ë°–ìœ¼ë¡œ ë²—ì–´ë‚¨ = break íŒì • ì§„í–‰
                     if (judgeTime < -maxbreak)
                     {
                         Score.Instance.data.maxbreak++;
@@ -322,11 +329,12 @@ public class Judgement : MonoBehaviour
                         Score.Instance.data.combo = 0;
                         Score.Instance.SetScore();
 
-                        Damage.Instance.Attack(JudgeType.maxbreak);  // BattleManager¿¡¼­ ÇÃ·¹ÀÌ¾î°¡ °ø°İ ¹Şµµ·Ï ÇÔ
+                        Damage.Instance.Attack(JudgeType.maxbreak);  // BattleManagerì—ì„œ í”Œë ˆì´ì–´ê°€ ê³µê²© ë°›ë„ë¡ í•¨
 
-                        // break·Î ÆÇÁ¤ ÈÄ Å¥¿¡¼­ ÇØ´ç ³ëÆ® Á¤º¸ Dequeue ÈÄ release ÁøÇà
+                        // breakë¡œ íŒì • í›„ íì—ì„œ í•´ë‹¹ ë…¸íŠ¸ ì •ë³´ Dequeue í›„ release ì§„í–‰
                         Note ReleaseNote = notes[i].Dequeue();
-                        NoteGenerator.Instance.judgedNoteRelease(ReleaseNote.line - 1);
+                        if(GameManager.Instance.state == GameManager.GameState.GamePlaying) 
+                            NoteGenerator.Instance.judgedNoteRelease(ReleaseNote.line - 1);
                     }
                 }
             }
