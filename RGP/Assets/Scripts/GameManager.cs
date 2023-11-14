@@ -73,7 +73,7 @@ public class GameManager : MonoBehaviour
         //플레이어 체력이 0이 되서 게임 오버
         state = GameState.NoneGamePlaying; //게임 상태를 NonePlaying으로 변경
         AudioManager.Instance.Stop(); //노래 중지
-
+        NoteGenerator.Instance.ReleaseCompleted();//모든 노트들 Release 실행
     }
 
     IEnumerator IEInit()
