@@ -163,10 +163,7 @@ public class Judgement : MonoBehaviour
                 Score.Instance.data.combo = 0;      //break시 콤보 초기화
             }
             Score.Instance.data.judge = note_Judgement; // Score에 판정 결과를 넘김
-
-
-            // Combo Animation 실행
-            EffectManager.Instance.coolbomb_Animation(line, (int)note_Judgement);
+            
 
             //게임이 플레잉 상태일때만 SetScore와 공격 진행
             //노트의 release도 이제 더 이상 관여하지 않음 -> GameManager에서 자체적으로 모든 노트를 Release할 예정
