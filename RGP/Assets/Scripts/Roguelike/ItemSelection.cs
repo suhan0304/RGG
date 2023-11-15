@@ -9,13 +9,21 @@ public class ItemSelection : MonoBehaviour
     public Button item1Button;
     public Button item2Button;
     public Button item3Button;
+<<<<<<< Updated upstream
 
+=======
+    public bool isSelect;
+>>>>>>> Stashed changes
     void Start()
     {
         // 아이템 선택 패널을 비활성화
         if (itemSelectionPanel != null)
         {
             itemSelectionPanel.SetActive(false);
+<<<<<<< Updated upstream
+=======
+            isSelect = false;
+>>>>>>> Stashed changes
         }
     }
 
@@ -37,6 +45,10 @@ public class ItemSelection : MonoBehaviour
         if (itemSelectionPanel != null)
         {
             itemSelectionPanel.SetActive(false);
+<<<<<<< Updated upstream
+=======
+            isSelect = true;
+>>>>>>> Stashed changes
         }
     }
 
@@ -46,6 +58,10 @@ public class ItemSelection : MonoBehaviour
         if (itemSelectionPanel != null)
         {
             itemSelectionPanel.SetActive(false);
+<<<<<<< Updated upstream
+=======
+            isSelect = true;
+>>>>>>> Stashed changes
         }
     }
 
@@ -55,6 +71,10 @@ public class ItemSelection : MonoBehaviour
         if (itemSelectionPanel != null)
         {
             itemSelectionPanel.SetActive(false);
+<<<<<<< Updated upstream
+=======
+            isSelect = true;
+>>>>>>> Stashed changes
         }
     }
 }
