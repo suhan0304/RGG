@@ -88,6 +88,7 @@ public class Damage : MonoBehaviour
 
             if (BattleManager.Instance.playerHealth.value <= 0)    // 플레이어의 체력이 0이 되었을 경우
             {
+                BattleManager.Instance.isClear = false;
                 GameManager.Instance.GameOver();
                 Debug.Log("Player is defeated!");
             }

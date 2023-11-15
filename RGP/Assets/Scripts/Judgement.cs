@@ -167,7 +167,7 @@ public class Judgement : MonoBehaviour
 
             //게임이 플레잉 상태일때만 SetScore와 공격 진행
             //노트의 release도 이제 더 이상 관여하지 않음 -> GameManager에서 자체적으로 모든 노트를 Release할 예정
-            if (GameManager.Instance.state != GameManager.GameState.GamePlaying) 
+            if (GameManager.Instance.state == GameManager.GameState.GamePlaying) 
             {
                 Score.Instance.SetScore();                  // Score의 SetScore를 진행
 

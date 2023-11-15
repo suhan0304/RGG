@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
     public int resolution_X = 1920;
     public int resolution_Y = 1080;
     public GameObject uiGameOver;
+    public GameObject uiStageClear;
 
     static GameManager instance;
     public static GameManager Instance
@@ -83,9 +84,19 @@ public class GameManager : MonoBehaviour
         uiGameOver.SetActive(true);
     }
 
+    // 노래가 끝났을 때, 플레이어가 살아있다면 다음 스테이지
+    public void NextStage()
+    {
+        state = GameState.NoneGamePlaying; //게임 상태를 NonePlaying으로 변경
+        AudioManager.Instance.Stop(); //노래 중지
+        NoteGenerator.Instance.DisabledNote();  //노트들 숨기기
+        uiStageClear.SetActive(true);       // 스테이지 클리어 화면
+    }
+
     IEnumerator IEInit()
     {
         uiGameOver.SetActive(false);
+        uiStageClear.SetActive(false);
         SheetLoader.Instance.Init();
 
         UIController.Instance.Init();
