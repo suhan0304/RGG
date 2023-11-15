@@ -68,6 +68,7 @@ public class AudioManager : MonoBehaviour
     {
         state = State.Playing;
         audioSource.Play();
+        BattleManager.Instance.isClear = true;  // 전투 시작시 클리어 여부는 true가 초기값, 전투 아닐 때는 false
     }
 
     public void Pause()
