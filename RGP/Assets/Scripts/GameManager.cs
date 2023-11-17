@@ -5,10 +5,13 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    public ItemSelection itemSelectionScript; // ItemSelection 스크립트에 대한 참조
+
     public int resolution_X = 1920;
     public int resolution_Y = 1080;
     public GameObject uiGameOver;
     public GameObject uiStageClear;
+    public GameObject uiItemSelectionPanel; // UI 패널을 연결할 변수
 
     static GameManager instance;
     public static GameManager Instance
@@ -24,6 +27,7 @@ public class GameManager : MonoBehaviour
     {
         if (instance == null)
             instance = this;
+        itemSelectionScript = FindObjectOfType<ItemSelection>();
     }
 
     public enum GameState
@@ -82,6 +86,7 @@ public class GameManager : MonoBehaviour
         AudioManager.Instance.Stop(); //노래 중지
         NoteGenerator.Instance.DisabledNote(); //노트들 숨기기
         uiGameOver.SetActive(true);
+        Debug.Log("게임오버");
     }
 
     // 노래가 끝났을 때, 플레이어가 살아있다면 다음 스테이지
@@ -89,7 +94,9 @@ public class GameManager : MonoBehaviour
     {
         state = GameState.NoneGamePlaying; //게임 상태를 NonePlaying으로 변경
         AudioManager.Instance.Stop(); //노래 중지
-        NoteGenerator.Instance.DisabledNote();  //노트들 숨기기
+        NoteGenerator.Instance.DisabledNote();  //노트들 숨기기  
+        itemSelectionScript.ShowItemSelectionPanel();// 노래가 끝나면 UI 패널을 활성화
+        uiItemSelectionPanel.SetActive(false);
         uiStageClear.SetActive(true);       // 스테이지 클리어 화면
     }
 
@@ -97,6 +104,7 @@ public class GameManager : MonoBehaviour
     {
         uiGameOver.SetActive(false);
         uiStageClear.SetActive(false);
+        uiItemSelectionPanel.SetActive(false);
         SheetLoader.Instance.Init();
 
         UIController.Instance.Init();

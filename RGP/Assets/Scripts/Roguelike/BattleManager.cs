@@ -34,8 +34,9 @@ public class BattleManager : MonoBehaviour
     private void Update()
     {
         // 노래가 끝났을 때, 플레이어가 살아있다면 클리어 판정으로 넘어가기
-        if (isClear == true && !AudioManager.Instance.IsPlaying())  
+        if (isClear && !AudioManager.Instance.IsPlaying())  
         {
+            isClear = false;
             ClearStage();
         }
     }
@@ -44,12 +45,12 @@ public class BattleManager : MonoBehaviour
     public void Init()
     {
         // 임시 초기화
-        playerHealthAmount = 300;  //임시로 300으로 설정
+        playerHealthAmount = 3000;  //임시로 3000으로 설정
         currentPlayerHealth = playerHealthAmount;
         playerHealth.maxValue = playerHealthAmount; // 플레이어 슬라이더 설정
         playerHealth.value = playerHealthAmount;
 
-        monsterHealthAmount = 500;
+        monsterHealthAmount = 50000;
         currentMonsterHealth = monsterHealthAmount;
         monsterHealth.maxValue = monsterHealthAmount;   // 몬스터 슬라이더 설정
         monsterHealth.value = monsterHealthAmount;
@@ -68,7 +69,8 @@ public class BattleManager : MonoBehaviour
         }
         else                            // 몬스터의 체력이 0이면
         {
-            GameManager.Instance.NextStage();
+            ItemSelection.Instance.ShowItemSelectionPanel();
+            
         }
     }
 
@@ -79,7 +81,7 @@ public class BattleManager : MonoBehaviour
         float duration = 5f;    // 감소하는 시간 설정
         float elapsedTime = 0f; // 경과한 시간
 
-        // 설정한 시간만킄 반복
+        // 설정한 시간만큼 반복
         while (elapsedTime < duration)
         {
             monsterHealth.value = Mathf.Lerp(currentMonsterHealth, 0, elapsedTime / duration);  // 몬스터 체력 슬라이더 duration 동안 서서히 감소시키기
@@ -98,8 +100,19 @@ public class BattleManager : MonoBehaviour
         }
         else                            // 현재 플레이어 체력이 0 초과면 생존
         {
-            GameManager.Instance.NextStage();   // 다음 스테이지 선택 화면으로 이동
+            ItemSelection.Instance.ShowItemSelectionPanel();
+            //GameManager.Instance.NextStage();   // 다음 스테이지 선택 화면으로 이동
         }
     }
-    
+    public void StopCoUpdateHealth()
+    {
+        // 코루틴 중지
+        if (coUpdateHealth != null)
+        {
+            StopCoroutine(coUpdateHealth);
+            Debug.Log("코루틴 중지");
+        }
+        coUpdateHealth = null;
+    }
+
 }
