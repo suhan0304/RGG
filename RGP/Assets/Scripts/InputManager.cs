@@ -25,7 +25,7 @@ public class InputManager : MonoBehaviour
         sync = FindObjectOfType<Sync>();
     }
 
-    // Update is called once per frame
+    Update is called once per frame
     void Update()
     {
     }
